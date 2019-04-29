@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - FileChooser",
+            "request": "launch",
+            "mainClass": "FileChooser",
+            "projectName": "ChessGameBS-master"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - ChessMain",
+            "request": "launch",
+            "mainClass": "ChessMain"
+        }
+    ]
+}
