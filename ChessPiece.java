@@ -5,13 +5,11 @@ import javax.swing.ImageIcon;
  * ChessPiece
  */
 public class ChessPiece {
-
 	private int posX;
 	private int posY;
 	private boolean alive;
 	private String team;
 	private String name;
-
 	private Image pawnb;
 	private Image pawnw;
 	private Image bishopb;
@@ -55,7 +53,6 @@ public class ChessPiece {
 		queenw = qw.getImage();
 		rookb = rb.getImage();
 		rookw = rw.getImage();
-
 	}
 
 	public Image getImage() {
@@ -95,7 +92,7 @@ public class ChessPiece {
 			}
 		}
 	}
-
+	
 	public String getFirstTeamChar() {
 		return Character.toString(team.charAt(0));
 	}

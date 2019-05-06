@@ -8,17 +8,17 @@ public class ChessFields {
     private ChessPiece p;
     private boolean empty;
 
-    public ChessFields(int posX, int posY, ChessPiece p) {
-        this.posX = posX;
-        this.posY = posY;
+    public ChessFields(int x, int y, ChessPiece p) {
+        this.posX = x;
+        this.posY = y;
         this.p = p;
 
         p.setPos(posX, posY);
     }
 
-    public ChessFields(int posX, int posY, boolean em) {
-        this.posX = posX;
-        this.posY = posY;
+    public ChessFields(int x, int y, boolean em) {
+        this.posX = x;
+        this.posY = y;
         this.empty = em;
     }
 
@@ -56,9 +56,9 @@ public class ChessFields {
 
     public String firstLetter() {
         if (empty) {
-            return "-";
+            return "---";
         } else {
-            return Character.toString(p.getName().charAt(0));
+            return p.getTeam().charAt(0)+"/"+p.getName().charAt(0);
         }
 
     }

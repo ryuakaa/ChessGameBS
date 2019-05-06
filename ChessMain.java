@@ -20,7 +20,7 @@ public class ChessMain extends JFrame {
         setResizable(false);
         pack();
 
-        setTitle("Chess Game für Berufsschule");
+        setTitle("Chess Game fuer Berufsschule");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }

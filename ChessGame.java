@@ -7,16 +7,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.RoundRectangle2D;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -29,9 +28,10 @@ public class ChessGame extends JPanel implements ActionListener, MouseListener, 
 
 	private static final long serialVersionUID = 1L;
 	private ChessFields[][] b = new ChessFields[8][8];
-	private ChessFileHandler cfh = new ChessFileHandler(b);
+	private ChessFileHandler cfh = new ChessFileHandler();
 	private Image chessboard;
 	private boolean running;
+	private boolean loaded = false;
 	private boolean dragging = false;
 	private int width = 750;
 	private int height = 600;
@@ -61,32 +61,51 @@ public class ChessGame extends JPanel implements ActionListener, MouseListener, 
 		addMouseMotionListener(this);
 
 		// open dialog and ask if open file or create new
+		boolean newGame = true;
 		int jop = JOptionPane.showConfirmDialog(null, "Are you the first player?", "ChessGame File for two players!",
 				JOptionPane.YES_NO_OPTION);
 		if (jop == JOptionPane.YES_OPTION) {
 			// create file
 			cfh.createNewFile();
 		} else if (jop == JOptionPane.NO_OPTION) {
-			// open file
+			// open file and load old state
 			cfh.openFile();
+			b = cfh.getBoard();
+			newGame = false;
+			loaded = true;
+			System.out.println("Loaded board successfully");
 		} else {
 			System.err.println("Open file aborted! Program will close now");
-
 		}
 
-		// initialize Chess Pieces on Fields
-		initTeams();
-		// printAllFields();
+		if(newGame) {
+			// initialize Chess Pieces on Fields
+			loaded = true;
+			initTeams();
+		}
 
 		// start painting things
 		running = true;
 
+		// start controll timer
+		TimerTask task = new TimerTask() {
+			public void run() {
+				if(cfh.isChanged(b)) {
+					System.out.println("Changed");
+				} else {
+					System.out.println("Same");
+				}
+			}
+		};
+		// initialize timer and start
+		Timer timer = new Timer("Timer");
+		timer.scheduleAtFixedRate(task, 0, 1000);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (running) {
+		if (running && loaded) {
 			// draws the ui
 			drawUI(g);
 			// draws chessboard
@@ -106,6 +125,7 @@ public class ChessGame extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	private void drawUI(Graphics g) {
+		// SAVE BUTTON
 		// button
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRoundRect(620, 550, 110, 30, 12, 12);
@@ -163,23 +183,6 @@ public class ChessGame extends JPanel implements ActionListener, MouseListener, 
 		System.out.println("Teams initalized!");
 	}
 
-	private void printAllFields() {
-		for (int j = 0; j < 8; j++) {
-			for (int i = 0; i < 8; i++) {
-				System.out.print(b[j][i].firstLetter() + " ");
-			}
-			System.out.println(" ");
-		}
-	}
-
-	/*
-	 * public static int[] something(){ int number1 = 1; int number2 = 2; return new
-	 * int[] {number1, number2}; }
-	 * 
-	 * public static void main(String[] args) { int result[] = something();
-	 * System.out.println(result[0] + result[1]); }
-	 */
-
 	private boolean isMoveValid(int oldx, int oldy, int newx, int newy) {
 		// System.out.println("Old: " + oldx + "/" + oldy);
 		// System.out.println("New: " + newx + "/" + newy);
@@ -211,6 +214,10 @@ public class ChessGame extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	@Override
+	public void actionPerformed(ActionEvent e) {
+	}
+
+	@Override
 	public void mouseMoved(MouseEvent e) {
 		// get new mouse pos when mouse is moved
 		mouseX = (e.getPoint().x - offsetX) / size;
@@ -230,10 +237,6 @@ public class ChessGame extends JPanel implements ActionListener, MouseListener, 
 		b[oldy][oldx].setEmpty(true);
 		b[newy][newx].setPiece(temp);
 		b[newy][newx] = tempf;
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
 	}
 
 	@Override
@@ -278,10 +281,6 @@ public class ChessGame extends JPanel implements ActionListener, MouseListener, 
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-	}
-
-	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
 
@@ -292,5 +291,18 @@ public class ChessGame extends JPanel implements ActionListener, MouseListener, 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	//	private void printAllFields() {
+	//	for (int j = 0; j < 8; j++) {
+	//		for (int i = 0; i < 8; i++) {
+	//			System.out.print(b[j][i].firstLetter() + " ");
+	//		}
+	//		System.out.println(" ");
+	//	}
+	//}
 
 }
